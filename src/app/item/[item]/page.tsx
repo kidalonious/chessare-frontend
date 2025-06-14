@@ -4,5 +4,10 @@ type Props = {
 
 export default function ItemPage({ params }: Props) {
   const { item } = params;
-  return <div>{item}</div>;
+
+  return (
+    <div>
+      <h1>Item Details for: {item}</h1>
+    </div>
+  );
 }
