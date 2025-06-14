@@ -12,7 +12,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <h1 className="text-2xl font-bold mb-4">Welcome! Start Searching</h1>
+      <h3 className="text-2xl font-bold mb-4">Lichess Username Below</h3>
       <Input
         type="text"
         placeholder="Type to search..."
