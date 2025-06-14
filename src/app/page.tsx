@@ -1,28 +1,46 @@
 'use client';
 
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+const mockData = ["Apple", "Banana", "Cherry", "Date", "Fig", "Grape", "Honeydew"];
 
 export default function HomePage() {
   const [query, setQuery] = useState("");
+  const [filtered, setFiltered] = useState<string[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-  };
+  useEffect(() => {
+    if (query.length === 0) {
+      setFiltered([]);
+      setShowDropdown(false);
+      return;
+    }
+    const results = mockData.filter(item =>
+      item.toLowerCase().includes(query.toLowerCase())
+    );
+
+    setFiltered(results);
+    setShowDropdown(results.length > 0);
+  }, [query]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <h3 className="text-2xl font-bold mb-4">Lichess Username Below</h3>
+    <div className="relative w-full max-w-md">
       <Input
         type="text"
         placeholder="Type to search..."
         value={query}
-        onChange={handleInputChange}
-        className="w-full max-w-md"
+        onChange={(e) => setQuery(e.target.value)}
+        className="w-full"
       />
-      <p className="mt-4 text-gray-600">
-        You are searching for: <strong>{query}</strong>
-      </p>
+      {showDropdown && (
+        <div className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-md mt-1 z-10">
+          {filtered.map((item, index) => (
+            <div key={index} className="p-2 hover:bg-gray-100 cursor-pointer">
+              {item}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
