@@ -1,4 +1,14 @@
-export default function ItemPage({ params }: { params: { item: string } }) {
+import { Metadata } from 'next';
+
+type Props = {
+  params: { item: string }
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return { title: `Item: ${params.item}` };
+}
+
+export default async function ItemPage({ params }: Props) {
   const { item } = params;
 
   return (
