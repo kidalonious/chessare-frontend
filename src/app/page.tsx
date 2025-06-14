@@ -1,64 +1,51 @@
 'use client';
 
-import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
+import { Input } from "@/components/ui/input"; // ShadCN Input
+import { Card } from "@/components/ui/card";
+import Link from 'next/link';
 
-const mockData = ["Apple", "Banana", "Cherry", "Date", "Fig", "Grape", "Honeydew"];
+export default function HomePage() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<string[]>([]);
 
-export default function SearchBar() {
-  const [query, setQuery] = useState("");
-  const [filtered, setFiltered] = useState<string[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const router = useRouter();
+  // Simulate fetching from Go backend or dummy data
+  const mockData = ['apple', 'banana', 'orange', 'grape', 'watermelon'];
 
   useEffect(() => {
     if (query.length === 0) {
-      setFiltered([]);
-      setShowDropdown(false);
+      setResults([]);
       return;
     }
 
-    const results = mockData.filter(item =>
+    // Simulate backend fetch (replace with real API later)
+    const filtered = mockData.filter(item =>
       item.toLowerCase().includes(query.toLowerCase())
     );
 
-    setFiltered(results);
-    setShowDropdown(results.length > 0);
+    setResults(filtered);
   }, [query]);
 
-  const handleSelect = (item: string) => {
-    router.push(`/item/${item.toLowerCase()}`); // Navigates to /item/apple etc.
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && query.trim() !== '') {
-      handleSelect(query.trim());
-    }
-  };
-
   return (
-    <div className="relative w-full max-w-md">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <Input
         type="text"
-        placeholder="Type to search..."
+        placeholder="Search for an item..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={handleKeyDown}
-        className="w-full"
+        className="w-80 mb-4"
       />
-      {showDropdown && (
-        <div className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-md mt-1 z-10">
-          {filtered.map((item, index) => (
-            <div
-              key={index}
-              className="p-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleSelect(item)}
-            >
-              {item}
-            </div>
+
+      {results.length > 0 && (
+        <Card className="w-80 p-2">
+          {results.map((item) => (
+            <Link href={`/item/${item}`} key={item}>
+              <div className="p-2 hover:bg-gray-100 cursor-pointer rounded">
+                {item}
+              </div>
+            </Link>
           ))}
-        </div>
+        </Card>
       )}
     </div>
   );
