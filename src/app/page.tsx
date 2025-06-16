@@ -9,6 +9,7 @@ export default function HomePage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [backendResponse, setBackendResponse] = useState<string>('');
 
   const mockData = ['apple', 'banana', 'orange', 'grape', 'watermelon'];
 
@@ -24,6 +25,20 @@ export default function HomePage() {
 
     setResults(filtered);
   }, [query]);
+
+  const testBackend = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/hello');
+      if (!res.ok) {
+        throw new Error('Backend error');
+      }
+      const data = await res.json();
+      setBackendResponse(data.message);
+    } catch (error) {
+      console.error('Error:', error);
+      setBackendResponse('Failed to reach backend');
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 gap-4">
@@ -63,6 +78,15 @@ export default function HomePage() {
           </Button>
         </Card>
       )}
+
+      {/* Backend Test Card */}
+      <Card className="w-80 p-4 bg-blue-50 shadow">
+        <h2 className="text-lg font-semibold mb-2">Backend Test</h2>
+        <Button onClick={testBackend}>Click to Test Backend</Button>
+        {backendResponse && (
+          <p className="mt-2 text-sm text-gray-700">{backendResponse}</p>
+        )}
+      </Card>
     </div>
   );
 }
